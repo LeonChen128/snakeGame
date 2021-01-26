@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title></title>
+  <title>🐸貪食蛇蛇🐸</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <link href="./icon/css/all.css" rel="stylesheet">
   <style>
     body {
       margin: 0px;
@@ -27,18 +29,29 @@
       width: 250px;
       height: 250px;
       margin: 50px auto;
-      border: 2px solid #e8dada;
       border-radius: 4px;
       position: relative;
+    }
+    .buttonFrame {
+      width: 220px;
+      height: 220px;
+      border: 2px solid #e8dada;
+      border-radius: 4px;
+      position: absolute;
+      transform: rotate(45deg);
+      top: 13px;
+      left: 13px;
     }
     .button {
       width: 70px;
       height: 70px;
-      line-height: 77px;
+      line-height: 70px;
       position: absolute;
-      border-radius: 4px;
+      border-radius: 35px;
       text-align: center;
       font-size: 60px;
+      color: #a46ad8;
+      border: 1px solid #a46ad8;
     }
     #buttonUp {
       left: 89px;
@@ -64,10 +77,11 @@
   <table id="snakeTable"></table>
 
   <div id="operationFrame">
-    <div class="button" id="buttonUp">🔼</div>
-    <div class="button" id="buttonRight">▶️</div>
-    <div class="button" id="buttonDown">🔽</div>
-    <div class="button" id="buttonLeft">◀️</div>
+    <div class="buttonFrame"></div>
+    <div class="button" id="buttonUp"><i class="fas fa-chevron-circle-up"></i></div>
+    <div class="button" id="buttonRight"><i class="fas fa-chevron-circle-right"></i></div>
+    <div class="button" id="buttonDown"><i class="fas fa-chevron-circle-down"></i></div>
+    <div class="button" id="buttonLeft"><i class="fas fa-chevron-circle-left"></i></div>
   </div>
   
   <script>
