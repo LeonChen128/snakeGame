@@ -23,12 +23,52 @@
       background: #abd89d;
       z-index: 5;
     }
+    #operationFrame {
+      width: 250px;
+      height: 250px;
+      margin: 50px auto;
+      border: 2px solid #e8dada;
+      border-radius: 4px;
+      position: relative;
+    }
+    .button {
+      width: 70px;
+      height: 70px;
+      line-height: 77px;
+      position: absolute;
+      border-radius: 4px;
+      text-align: center;
+      font-size: 60px;
+    }
+    #buttonUp {
+      left: 89px;
+      top: 10px;
+    }
+    #buttonLeft {
+      top: 84px;
+      left: 10px;
+    }
+    #buttonRight {
+      top: 84px;
+      left: 168px;
+    }
+    #buttonDown {
+      left: 89px;
+      top: 166px;
+    }
   </style>
 </head>
 <body>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
   <table id="snakeTable"></table>
+
+  <div id="operationFrame">
+    <div class="button" id="buttonUp">🔼</div>
+    <div class="button" id="buttonRight">▶️</div>
+    <div class="button" id="buttonDown">🔽</div>
+    <div class="button" id="buttonLeft">◀️</div>
+  </div>
   
   <script>
 
@@ -165,6 +205,23 @@
       initSnakePosition()
       initFoodPosition()    
       $(window).keyup(repeatMoveSnake)
+
+      $('#buttonUp').click(function() {
+        event.keyCode = 38
+        repeatMoveSnake(event)       
+      })
+      $('#buttonDown').click(function() {
+        event.keyCode = 40
+        repeatMoveSnake(event)       
+      })
+      $('#buttonRight').click(function() {
+        event.keyCode = 39
+        repeatMoveSnake(event)       
+      })
+      $('#buttonLeft').click(function() {
+        event.keyCode = 37
+        repeatMoveSnake(event)       
+      })
       //$(window).keyup(moveSnake)
 
     })
