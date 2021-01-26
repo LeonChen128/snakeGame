@@ -3,6 +3,7 @@
 <head>
   <title>🐸貪食蛇蛇🐸</title>
   <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,minimal-ui">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
   <link href="./icon/css/all.css" rel="stylesheet">
   <style>
     body {
@@ -149,11 +150,11 @@
       function moveSnake(event) {
         if ($.inArray(event.keyCode, [37, 38, 39, 40]) < 0 ) {return false}
         // 去除尾巴
-        console.log(bodys)
         $('#py' + bodys[bodys.length - 1].y + 'x' + bodys[bodys.length - 1].x).removeClass('snakeBody')
         $snakeMap[bodys[bodys.length - 1].y][bodys[bodys.length - 1].x].val = 0
         bodys.pop()
         
+        console.log('按鍵: ' + event.keyCode + ', y: ' + snakeNow.y + 'x: ' + snakeNow.x)
         // 左
         if (event.keyCode === 37) { snakeNow.x <= 0 ? snakeNow.x = 20 : snakeNow.x-- }
         // 上
@@ -162,6 +163,8 @@
         if (event.keyCode === 39) { snakeNow.x >= 20 ? snakeNow.x = 0 : snakeNow.x++ }
         // 下
         if (event.keyCode === 40) { snakeNow.y >= 17 ? snakeNow.y = 0 : snakeNow.y++ }
+
+        console.log('按鍵: ' + event.keyCode + ', y: ' + snakeNow.y + 'x: ' + snakeNow.x)
 
         // 蛇頭前進
         bodys.splice(0, 0, {y: snakeNow.y, x: snakeNow.x})
@@ -204,7 +207,7 @@
         if (oldKey === 38) { event.keyCode = event.keyCode === 40 ? 38 : event.keyCode }
         if (oldKey === 39) { event.keyCode = event.keyCode === 37 ? 39 : event.keyCode }
         if (oldKey === 40) { event.keyCode = event.keyCode === 38 ? 40 : event.keyCode }
-        interval = setInterval(function(){ moveSnake(event) }, 120)
+        interval = setInterval(function(){ moveSnake(event) }, 1)
       }
 
       function gameSet() {
@@ -220,7 +223,6 @@
         }
         initSnakePosition()
         initFoodPosition()
-        console.log($snakeMap)
       }
 
       initSnakePosition()
@@ -243,24 +245,18 @@
         event.keyCode = 37
         repeatMoveSnake(event)       
       })
-      //$(window).keyup(moveSnake)
 
     })
 
-    // var start = null;
-    // var element = document.getElementById('SomeElementYouWantToAnimate');
-
-    // function step(timestamp) {
-    //   if (!start) start = timestamp;
-    //   var progress = timestamp - start;
-    //   element.style.transform = 'translateX(' + Math.min(progress / 10, 200) + 'px)';
-    //   if (progress < 2000) {
-    //     window.requestAnimationFrame(step);
-    //   }
-    // }
-
-    // window.requestAnimationFrame(step);
     
+  </script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-E1ZS12Z8E3"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-E1ZS12Z8E3');
   </script>
 </body>
 </html>
