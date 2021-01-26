@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <style>
+    body {
+      margin: 0px;
+    }
+    #snakeTable {
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: #e8e7e7;
+    }
+    td {
+      width: 10px;
+      height: 10px;
+    }
+    .snakeBody {
+      background: #d88e81;
+      z-index: 10;
+    }
+    .feed {
+      background: #abd89d;
+      z-index: 5;
+    }
+  </style>
+</head>
+<body>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+  <table id="snakeTable"></table>
+  
+  <script>
+
+    let $snakeMap = $([]),
+        $snakeTable = $('#snakeTable'),
+        snakeNow = {y: 0, x: 0},
+        bodys = [],
+        food = {y: 0, x: 0},
+        interval,
+        oldKey
+
+    $(function() {
+
+      function initMapX() {
+        let mapX = []
+        for (let i = 0; i < 21; i++) {
+          mapX.push({val: 0, id: null, top: null, left: null, down: null, right: null})
+        }
+        return mapX
+      }
+
+      for (let i = 1; i < 19; i++) {
+        $snakeMap.push(initMapX())
+      }
+
+      for (let i = 0; i < 18; i++) {
+        $snakeTable.append('<tr>')
+        for (let j = 0; j < 21; j++) {
+          $snakeMap[i][j].id = 'py' + i + 'x' + j
+          $snakeMap[i][j].top = 'py' + (i === 0 ? 17 : i - 1 ) + 'x' + j
+          $snakeMap[i][j].left = 'py' + i + 'x' + (j === 0 ? 20 : j - 1)
+          $snakeMap[i][j].down = 'py' + (i === 17 ? 0 : i + 1 ) + 'x' + j
+          $snakeMap[i][j].right = 'py' + i + 'x' + (j === 20 ? 0 : j + 1)
+          $snakeTable.append('<td id="py' + i + 'x' + j + '"></td>')
+        }
+        $snakeTable.append('</tr>')
+      }
+
+      function initSnakePosition() {
+        snakeNow.y = Math.floor(Math.random() * 18)
+        snakeNow.x = Math.floor(Math.random() * 21)
+        $snakeMap[snakeNow.y][snakeNow.x].val = 1
+        $('#py' + snakeNow.y + 'x' + snakeNow.x).addClass('snakeBody')
+        bodys.push({y: snakeNow.y, x: snakeNow.x})
+      }
+
+      function initFoodPosition() {
+        food.y = Math.floor(Math.random() * 18)
+        food.x = Math.floor(Math.random() * 21)
+        if ($snakeMap[food.y][food.x].val !== 0) {
+          initFoodPosition()
+        }
+        $snakeMap[food.y][food.x].val = 2
+        $('#py' + food.y + 'x' + food.x).addClass('feed')
+      }
+
+      function moveSnake(event) {
+        if ($.inArray(event.keyCode, [37, 38, 39, 40]) < 0 ) {return false}
+        // 去除尾巴
+        console.log(bodys)
+        $('#py' + bodys[bodys.length - 1].y + 'x' + bodys[bodys.length - 1].x).removeClass('snakeBody')
+        $snakeMap[bodys[bodys.length - 1].y][bodys[bodys.length - 1].x].val = 0
+        bodys.pop()
+        
+        // 左
+        if (event.keyCode === 37) { snakeNow.x <= 0 ? snakeNow.x = 20 : snakeNow.x-- }
+        // 上
+        if (event.keyCode === 38) { snakeNow.y <= 0 ? snakeNow.y = 17 : snakeNow.y-- }
+        // 右
+        if (event.keyCode === 39) { snakeNow.x >= 20 ? snakeNow.x = 0 : snakeNow.x++ }
+        // 下
+        if (event.keyCode === 40) { snakeNow.y >= 17 ? snakeNow.y = 0 : snakeNow.y++ }
+
+        // 蛇頭前進
+        bodys.splice(0, 0, {y: snakeNow.y, x: snakeNow.x})
+        if ($snakeMap[snakeNow.y][snakeNow.x].val === 1) { 
+          gameSet()
+          return false
+        }
+        $('#' + $snakeMap[snakeNow.y][snakeNow.x].id).addClass('snakeBody')
+        $snakeMap[snakeNow.y][snakeNow.x].val = 1
+
+        // 吃到飼料
+        if (food.y === snakeNow.y && food.x === snakeNow.x) {
+          $('#' + $snakeMap[food.y][food.x].id).removeClass('feed')
+          $snakeMap[food.y][food.x].val = 1
+          initFoodPosition()
+
+          $('#py' + bodys[bodys.length - 1].y + 'x' + bodys[bodys.length - 1].x).addClass('snakeBody')
+            $snakeMap[bodys[bodys.length - 1].y][bodys[bodys.length - 1].x].val = 1
+
+          if (event.keyCode === 37) {
+            bodys.push({y: bodys[bodys.length - 1].y, x: bodys[bodys.length - 1].x + 1})
+          }
+          if (event.keyCode === 38) {
+            bodys.push({y: bodys[bodys.length - 1].y - 1, x: bodys[bodys.length - 1].x})
+          }
+          if (event.keyCode === 39) {
+            bodys.push({y: bodys[bodys.length - 1].y, x: bodys[bodys.length - 1].x - 1})
+          }
+          if (event.keyCode === 40) {
+            bodys.push({y: bodys[bodys.length - 1].y + 1, x: bodys[bodys.length - 1].x})
+          }
+        }
+        oldKey = event.keyCode
+      }
+
+      function repeatMoveSnake(event) {
+        clearInterval(interval)
+
+        if (oldKey === 37) { event.keyCode = event.keyCode === 39 ? 37 : event.keyCode }
+        if (oldKey === 38) { event.keyCode = event.keyCode === 40 ? 38 : event.keyCode }
+        if (oldKey === 39) { event.keyCode = event.keyCode === 37 ? 39 : event.keyCode }
+        if (oldKey === 40) { event.keyCode = event.keyCode === 38 ? 40 : event.keyCode }
+        interval = setInterval(function(){ moveSnake(event) }, 120)
+      }
+
+      function gameSet() {
+        alert('遊戲結束')
+
+        for (let i = 0; i < 18; i++) {
+          for (let j = 0; j < 21; j++) {
+            $snakeMap[i][j].val = 0
+            $('#' + $snakeMap[i][j].id).removeClass('snakeBody')
+            $('#' + $snakeMap[i][j].id).removeClass('feed')
+            bodys = []
+          }
+        }
+        initSnakePosition()
+        initFoodPosition()
+        console.log($snakeMap)
+      }
+
+      initSnakePosition()
+      initFoodPosition()    
+      $(window).keyup(repeatMoveSnake)
+      //$(window).keyup(moveSnake)
+
+    })
+
+    // var start = null;
+    // var element = document.getElementById('SomeElementYouWantToAnimate');
+
+    // function step(timestamp) {
+    //   if (!start) start = timestamp;
+    //   var progress = timestamp - start;
+    //   element.style.transform = 'translateX(' + Math.min(progress / 10, 200) + 'px)';
+    //   if (progress < 2000) {
+    //     window.requestAnimationFrame(step);
+    //   }
+    // }
+
+    // window.requestAnimationFrame(step);
+    
+  </script>
+</body>
+</html>
